@@ -483,6 +483,10 @@ function switchToGame() {
     elements.gameScreen.classList.add('active');
 }
 
+window.addEventListener('resize', () => {
+    if (gameState.phase !== 'LOBBY') renderTable();
+});
+
 function renderTable() {
     elements.playerContainer.innerHTML = '';
     elements.communityCards.innerHTML = '';
@@ -520,9 +524,10 @@ function renderTable() {
     const centerX = tableWidth / 2;
     const centerY = tableHeight / 2;
     
-    // Increased radius and added padding for overlays
-    const radiusX = Math.min(tableWidth * 0.4, 600); 
-    const radiusY = Math.min(tableHeight * 0.38, 300);
+    // Improved radius for mobile/desktop responsiveness
+    const isMobile = tableWidth < 600;
+    const radiusX = Math.min(tableWidth * (isMobile ? 0.35 : 0.4), isMobile ? 300 : 600); 
+    const radiusY = Math.min(tableHeight * (isMobile ? 0.3 : 0.38), isMobile ? 200 : 300);
 
     const myIndex = gameState.players.findIndex(p => p.peerId === myPeerId);
 

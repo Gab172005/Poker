@@ -265,25 +265,81 @@ button {
 /* Action Buttons */
 #controls-bar {
     position: fixed;
-    bottom: 40px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 15px;
+    gap: 10px;
     z-index: 100;
+    width: 95%;
+    max-width: 500px;
+    justify-content: center;
 }
 
 .action-btn {
-    width: 140px;
+    flex: 1;
     height: 45px;
     background: #111;
     color: white;
     border: 2px solid #333;
     border-radius: 10px;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 4px 0 #000;
+    min-width: 0;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 600px) {
+    .pot-container {
+        font-size: 1.5rem;
+        top: 30%;
+    }
+
+    .community-cards .card {
+        width: 45px;
+        height: 65px;
+    }
+
+    .player-slot {
+        width: 100px;
+    }
+
+    .player-info-box {
+        width: 80px;
+    }
+
+    .player-amount, .player-name-label {
+        font-size: 0.7rem;
+        padding: 2px;
+    }
+
+    .player-cards-container .card {
+        width: 35px;
+        height: 50px;
+    }
+
+    .card-front span:first-child { font-size: 0.7rem; }
+    .card-front span:last-child { font-size: 1rem; }
+
+    #game-log {
+        width: 150px;
+        height: 100px;
+        font-size: 0.7rem;
+        bottom: 80px;
+    }
+
+    #game-info {
+        top: 75px;
+        left: 10px;
+    }
+
+    .top-icon-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
 }
 
 .action-btn:active {

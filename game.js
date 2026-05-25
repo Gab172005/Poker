@@ -80,10 +80,54 @@ const elements = {
     toggleLogBtn: document.getElementById('toggle-log-btn'),
     homeBtn: document.getElementById('home-btn'),
     audioBtn: document.getElementById('audio-btn'),
+    raiseModal: document.getElementById('raise-modal'),
+    raiseInput: document.getElementById('raise-amount-input'),
+    minRaiseInfo: document.getElementById('min-raise-info'),
+    maxRaiseInfo: document.getElementById('max-raise-info'),
+    confirmRaiseBtn: document.getElementById('confirm-raise'),
+    cancelRaiseBtn: document.getElementById('cancel-raise'),
+    increaseRaiseBtn: document.getElementById('increase-raise'),
+    decreaseRaiseBtn: document.getElementById('decrease-raise'),
 };
 
 elements.toggleLogBtn.onclick = () => {
     elements.gameLog.classList.toggle('collapsed');
+};
+
+let currentMinRaise = 0;
+let currentMaxRaise = 0;
+
+document.getElementById('raise-btn').onclick = () => {
+    const myPlayer = gameState.players.find(p => p.peerId === myPeerId);
+    currentMinRaise = Math.max(gameState.currentBet + gameState.minRaise, gameState.bigBlind * 2);
+    currentMaxRaise = myPlayer.chips + myPlayer.bet;
+
+    elements.minRaiseInfo.innerText = currentMinRaise;
+    elements.maxRaiseInfo.innerText = currentMaxRaise;
+    elements.raiseInput.value = currentMinRaise;
+    elements.raiseModal.classList.add('active');
+};
+
+elements.cancelRaiseBtn.onclick = () => elements.raiseModal.classList.remove('active');
+
+elements.increaseRaiseBtn.onclick = () => {
+    let val = parseInt(elements.raiseInput.value) || 0;
+    if (val + 10 <= currentMaxRaise) elements.raiseInput.value = val + 10;
+};
+
+elements.decreaseRaiseBtn.onclick = () => {
+    let val = parseInt(elements.raiseInput.value) || 0;
+    if (val - 10 >= currentMinRaise) elements.raiseInput.value = val - 10;
+};
+
+elements.confirmRaiseBtn.onclick = () => {
+    const val = parseInt(elements.raiseInput.value);
+    if (!isNaN(val) && val >= currentMinRaise && val <= currentMaxRaise) {
+        sendAction('RAISE', val);
+        elements.raiseModal.classList.remove('active');
+    } else {
+        alert("Invalid raise amount.");
+    }
 };
 
 elements.homeBtn.onclick = () => {
@@ -609,19 +653,6 @@ function renderTable() {
 
 document.getElementById('fold-btn').onclick = () => sendAction('FOLD');
 document.getElementById('call-btn').onclick = () => sendAction('CALL');
-document.getElementById('raise-btn').onclick = () => {
-    const myPlayer = gameState.players.find(p => p.peerId === myPeerId);
-    const minVal = Math.max(gameState.currentBet + gameState.minRaise, gameState.bigBlind * 2);
-    const amount = prompt(`Raise to (Min: ${minVal}, Max: ${myPlayer.chips + myPlayer.bet}):`, minVal);
-    if (amount) {
-        const val = parseInt(amount);
-        if (!isNaN(val) && val >= minVal && val <= (myPlayer.chips + myPlayer.bet)) {
-            sendAction('RAISE', val);
-        } else {
-            alert("Invalid raise amount.");
-        }
-    }
-};
 
 function sendAction(action, amount = 0) {
     if (isHost) {

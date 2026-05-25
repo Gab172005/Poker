@@ -48,6 +48,23 @@
             <button class="action-btn call-btn" id="call-btn">Check</button>
             <button class="action-btn raise-btn" id="raise-btn">Raise</button>
         </div>
+
+        <!-- Raise Modal -->
+        <div id="raise-modal" class="modal">
+            <div class="modal-content">
+                <h3>Set Raise Amount</h3>
+                <div class="raise-input-group">
+                    <button class="adjust-btn" id="decrease-raise">-</button>
+                    <input type="number" id="raise-amount-input" min="0" step="10">
+                    <button class="adjust-btn" id="increase-raise">+</button>
+                </div>
+                <div class="raise-range-info">Min: $<span id="min-raise-info">0</span> | Max: $<span id="max-raise-info">0</span></div>
+                <div class="modal-actions">
+                    <button class="modal-btn cancel-btn" id="cancel-raise">Cancel</button>
+                    <button class="modal-btn confirm-btn" id="confirm-raise">Confirm Raise</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

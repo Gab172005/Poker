@@ -76,8 +76,14 @@ const elements = {
     resetRoomBtn: document.getElementById('reset-room-btn'),
     controlsBar: document.getElementById('controls-bar'),
     gameLog: document.getElementById('game-log'),
+    logContent: document.getElementById('log-content'),
+    toggleLogBtn: document.getElementById('toggle-log-btn'),
     homeBtn: document.getElementById('home-btn'),
     audioBtn: document.getElementById('audio-btn'),
+};
+
+elements.toggleLogBtn.onclick = () => {
+    elements.gameLog.classList.toggle('collapsed');
 };
 
 elements.homeBtn.onclick = () => {
@@ -93,7 +99,7 @@ elements.audioBtn.onclick = () => {
 function log(msg) {
     const entry = document.createElement('div');
     entry.innerText = msg;
-    elements.gameLog.prepend(entry);
+    elements.logContent.prepend(entry);
 }
 
 function showStatus(msg, isError = false) {

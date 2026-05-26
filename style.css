@@ -326,12 +326,39 @@ button:active {
     bottom: 90px;
     width: 240px;
     height: 180px;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.85);
     border: 4px solid var(--pixel-black);
-    padding: 10px;
+    padding: 40px 10px 10px 10px;
     font-size: 0.5rem;
     line-height: 1.4;
+    overflow-y: auto;
+    transition: height 0.3s ease;
+    z-index: 1000;
+    box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: var(--pixel-gold) transparent;
+}
+
+#game-log::-webkit-scrollbar {
+    width: 6px;
+}
+
+#game-log::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#game-log::-webkit-scrollbar-thumb {
+    background-color: var(--pixel-gold);
+    border: 1px solid var(--pixel-black);
+}
+
+#game-log.collapsed {
+    height: 40px;
     overflow: hidden;
+}
+
+#game-log.collapsed #log-content {
+    display: none;
 }
 
 #log-content div { margin-bottom: 6px; border-left: 3px solid var(--pixel-gold); padding-left: 5px; }
@@ -355,6 +382,7 @@ button:active {
     .action-btn { width: 30%; height: 40px; font-size: 0.6rem; }
     
     #game-log { width: 160px; height: 120px; right: 10px; bottom: 80px; }
+    #game-log.collapsed { height: 40px; }
     .pot-container { font-size: 0.9rem; }
 }
 
@@ -462,8 +490,8 @@ button:active {
 }
 
 .top-icon-btn {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     background: var(--pixel-black);
     border: 2px solid #555;
     color: white;
@@ -471,7 +499,7 @@ button:active {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
+    font-size: 1.5rem;
 }
 
 #toggle-log-btn {
@@ -481,6 +509,16 @@ button:active {
     cursor: pointer;
     font-size: 1rem;
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: 0;
+    right: 0;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+
+#toggle-log-btn:hover {
+    transform: scale(1.1);
+    color: white;
 }

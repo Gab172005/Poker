@@ -172,10 +172,15 @@ elements.homeBtn.onclick = async () => {
     if (await customConfirm("Leave this room?")) location.reload();
 };
 
+const ICONS = {
+    audioOn: `<svg viewBox="0 0 10 10" width="50" height="50" fill="currentColor" shape-rendering="crispEdges"><path d="M4 2H2v6h2l3 2V0L4 2z" /></svg>`,
+    audioOff: `<svg viewBox="0 0 10 10" width="50" height="50" fill="currentColor" shape-rendering="crispEdges"><path d="M4 2H2v6h2l3 2V0L4 2z M7 3h1v1h-1z M9 3h1v1h-1z M8 4h1v1h-1z M7 5h1v1h-1z M9 5h1v1h-1z" /></svg>`
+};
+
 let audioEnabled = true;
 elements.audioBtn.onclick = () => {
     audioEnabled = !audioEnabled;
-    elements.audioBtn.innerText = audioEnabled ? "🔊" : "🔇";
+    elements.audioBtn.innerHTML = audioEnabled ? ICONS.audioOn : ICONS.audioOff;
 };
 
 function log(msg) {

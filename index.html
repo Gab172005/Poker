@@ -33,7 +33,7 @@
             <div id="room-display">Room: -</div>
             <div id="game-status">Waiting for players...</div>
             <button id="start-game-btn" style="display: none;">Start Game</button>
-            <button id="reset-room-btn" style="display: none; background: #f44336; color: white; margin-top: 5px; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold;">Reset Room</button>
+            <button id="reset-room-btn" style="display: none;">Reset Room</button>
         </div>
         <div id="game-log">
             <button id="toggle-log-btn" title="Toggle Log">📜</button>
@@ -51,17 +51,28 @@
 
         <!-- Raise Modal -->
         <div id="raise-modal" class="modal">
-            <div class="modal-content">
-                <h3>Set Raise Amount</h3>
+            <div class="modal-content pixel-border">
+                <h3 class="pixel-text">RAISE AMOUNT</h3>
                 <div class="raise-input-group">
-                    <button class="adjust-btn" id="decrease-raise">-</button>
-                    <input type="number" id="raise-amount-input" min="0" step="10">
-                    <button class="adjust-btn" id="increase-raise">+</button>
+                    <button class="adjust-btn pixel-border" id="decrease-raise">-</button>
+                    <input type="number" id="raise-amount-input" min="0" step="10" class="pixel-input">
+                    <button class="adjust-btn pixel-border" id="increase-raise">+</button>
                 </div>
                 <div class="raise-range-info">Min: $<span id="min-raise-info">0</span> | Max: $<span id="max-raise-info">0</span></div>
                 <div class="modal-actions">
-                    <button class="modal-btn cancel-btn" id="cancel-raise">Cancel</button>
-                    <button class="modal-btn confirm-btn" id="confirm-raise">Confirm Raise</button>
+                    <button class="modal-btn cancel-btn pixel-border" id="cancel-raise">CANCEL</button>
+                    <button class="modal-btn confirm-btn pixel-border" id="confirm-raise">CONFIRM</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Modal -->
+        <div id="alert-modal" class="modal">
+            <div class="modal-content pixel-border alert-content">
+                <h3 id="alert-title" class="pixel-text">MESSAGE</h3>
+                <p id="alert-msg"></p>
+                <div class="modal-actions" id="alert-actions">
+                    <button class="modal-btn confirm-btn pixel-border" id="alert-ok">OK</button>
                 </div>
             </div>
         </div>

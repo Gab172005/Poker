@@ -88,7 +88,45 @@ const elements = {
     cancelRaiseBtn: document.getElementById('cancel-raise'),
     increaseRaiseBtn: document.getElementById('increase-raise'),
     decreaseRaiseBtn: document.getElementById('decrease-raise'),
+    alertModal: document.getElementById('alert-modal'),
+    alertTitle: document.getElementById('alert-title'),
+    alertMsg: document.getElementById('alert-msg'),
+    alertOk: document.getElementById('alert-ok'),
+    alertActions: document.getElementById('alert-actions'),
 };
+
+function customAlert(msg, title = "MESSAGE") {
+    return new Promise((resolve) => {
+        elements.alertTitle.innerText = title;
+        elements.alertMsg.innerText = msg;
+        elements.alertActions.innerHTML = '<button class="modal-btn confirm-btn pixel-border" id="alert-ok">OK</button>';
+        elements.alertModal.classList.add('active');
+        document.getElementById('alert-ok').onclick = () => {
+            elements.alertModal.classList.remove('active');
+            resolve();
+        };
+    });
+}
+
+function customConfirm(msg, title = "CONFIRM") {
+    return new Promise((resolve) => {
+        elements.alertTitle.innerText = title;
+        elements.alertMsg.innerText = msg;
+        elements.alertActions.innerHTML = `
+            <button class="modal-btn cancel-btn pixel-border" id="confirm-no">NO</button>
+            <button class="modal-btn confirm-btn pixel-border" id="confirm-yes">YES</button>
+        `;
+        elements.alertModal.classList.add('active');
+        document.getElementById('confirm-no').onclick = () => {
+            elements.alertModal.classList.remove('active');
+            resolve(false);
+        };
+        document.getElementById('confirm-yes').onclick = () => {
+            elements.alertModal.classList.remove('active');
+            resolve(true);
+        };
+    });
+}
 
 elements.toggleLogBtn.onclick = () => {
     elements.gameLog.classList.toggle('collapsed');
@@ -120,18 +158,18 @@ elements.decreaseRaiseBtn.onclick = () => {
     if (val - 10 >= currentMinRaise) elements.raiseInput.value = val - 10;
 };
 
-elements.confirmRaiseBtn.onclick = () => {
+elements.confirmRaiseBtn.onclick = async () => {
     const val = parseInt(elements.raiseInput.value);
     if (!isNaN(val) && val >= currentMinRaise && val <= currentMaxRaise) {
         sendAction('RAISE', val);
         elements.raiseModal.classList.remove('active');
     } else {
-        alert("Invalid raise amount.");
+        await customAlert("Invalid raise amount.", "ERROR");
     }
 };
 
-elements.homeBtn.onclick = () => {
-    if (confirm("Leave this room?")) location.reload();
+elements.homeBtn.onclick = async () => {
+    if (await customConfirm("Leave this room?")) location.reload();
 };
 
 let audioEnabled = true;
@@ -221,16 +259,16 @@ elements.createBtn.onclick = async () => {
     }
 };
 
-elements.startGameBtn.onclick = () => {
+elements.startGameBtn.onclick = async () => {
     if (gameState.players.length < 2) {
-        alert("Need at least 2 players!");
+        await customAlert("Need at least 2 players!", "LOBBY");
         return;
     }
     startHand();
 };
 
-elements.resetRoomBtn.onclick = () => {
-    if (!confirm("Reset all chips and game state?")) return;
+elements.resetRoomBtn.onclick = async () => {
+    if (!await customConfirm("Reset all chips and game state?")) return;
     gameState = {
         players: gameState.players.map(p => ({ ...p, chips: 1000, cards: [], status: 'IDLE', bet: 0 })),
         pot: 0,
@@ -249,6 +287,7 @@ elements.resetRoomBtn.onclick = () => {
     renderTable();
     log("Room reset by host.");
 };
+
 
 function startHand() {
     sfx.shuffle();
@@ -549,14 +588,17 @@ function renderTable() {
         elements.tableArea.appendChild(potEl);
     }
     potEl.innerHTML = `
-        <div class="pot-chips">
-            <div class="chip chip-white"></div>
-            <div class="chip chip-blue" style="margin-top: -5px;"></div>
-        </div>
-        $${gameState.pot}
+        <div class="pixel-text" style="font-size: 0.6rem; color: #fff; margin-bottom: 5px;">POT</div>
+        <div class="pixel-text">$${gameState.pot}</div>
     `;
 
-    elements.gameStatus.innerText = "Phase: " + gameState.phase;
+    elements.gameStatus.innerText = "PHASE: " + gameState.phase;
+
+    // Host Controls Visibility
+    if (isHost) {
+        elements.startGameBtn.style.display = gameState.phase === 'LOBBY' ? 'block' : 'none';
+        elements.resetRoomBtn.style.display = gameState.phase === 'LOBBY' ? 'block' : 'none';
+    }
 
     const currentPlayer = gameState.players[gameState.turnIndex];
     if (currentPlayer && currentPlayer.peerId === myPeerId && gameState.phase !== 'LOBBY' && gameState.phase !== 'SHOWDOWN') {
@@ -564,7 +606,7 @@ function renderTable() {
         const callBtn = document.getElementById('call-btn');
         const myPlayer = gameState.players.find(p => p.peerId === myPeerId);
         const callAmount = gameState.currentBet - myPlayer.bet;
-        callBtn.innerText = callAmount > 0 ? `Call` : "Check";
+        callBtn.innerText = callAmount > 0 ? `CALL` : "CHECK";
     } else {
         elements.controlsBar.style.display = 'none';
     }
@@ -574,18 +616,17 @@ function renderTable() {
     const centerX = tableWidth / 2;
     const centerY = tableHeight / 2;
     
-    // Improved radius for mobile/desktop responsiveness
     const isMobile = tableWidth < 600;
-    const radiusX = Math.min(tableWidth * (isMobile ? 0.35 : 0.4), isMobile ? 300 : 600); 
-    const radiusY = Math.min(tableHeight * (isMobile ? 0.3 : 0.38), isMobile ? 200 : 300);
+    // Tighter radius to ensure players don't overlap with edge of screen or each other
+    const radiusX = Math.min(tableWidth * (isMobile ? 0.38 : 0.35), isMobile ? 180 : 450); 
+    const radiusY = Math.min(tableHeight * (isMobile ? 0.32 : 0.3), isMobile ? 150 : 250);
 
     const myIndex = gameState.players.findIndex(p => p.peerId === myPeerId);
 
     gameState.players.forEach((player, index) => {
-        // Calculate relative index so local player is always at the "bottom" (index 0 for angle calc)
         const relativeIndex = (index - myIndex + gameState.players.length) % gameState.players.length;
         
-        // Adjust angle so relativeIndex 0 is at bottom center (Math.PI / 2)
+        // Distribute players around the table, starting from bottom-center
         const angle = (relativeIndex / gameState.players.length) * Math.PI * 2 + Math.PI / 2;
         const x = centerX + Math.cos(angle) * radiusX;
         const y = centerY + Math.sin(angle) * radiusY;
@@ -595,44 +636,43 @@ function renderTable() {
         const isMe = player.peerId === myPeerId;
 
         const slot = document.createElement('div');
-        slot.className = 'player-slot' + (isWinner ? ' winner' : '') + (isMe ? ' me' : '');
+        slot.className = 'player-slot' + (isWinner ? ' winner' : '') + (isMe ? ' me' : '') + (isMyTurn ? ' active-turn' : '');
         slot.style.left = x + 'px';
         slot.style.top = y + 'px';
 
         slot.innerHTML = `
             <div class="player-cards-container"></div>
-            <div class="player-info-box">
+            <div class="player-info-box pixel-border">
                 <div class="player-amount">$${player.chips}</div>
-                <div class="player-name-label">${player.name}</div>
-                ${index === gameState.dealerIndex ? '<div class="dealer-button">D</div>' : ''}
+                <div class="player-name-label">${player.name.toUpperCase()}</div>
+                ${index === gameState.dealerIndex ? '<div class="dealer-button pixel-border">D</div>' : ''}
             </div>
-            <div class="player-chips-stack">
-                <div class="chip chip-white"></div>
-                <div class="chip chip-blue"></div>
-                ${player.bet > 0 ? '<div class="chip chip-red"></div>' : ''}
-            </div>
+            ${player.bet > 0 ? `<div class="player-bet-badge pixel-text" style="position: absolute; top: -25px; font-size: 0.5rem; background: rgba(0,0,0,0.6); padding: 2px 4px; border: 1px solid var(--pixel-gold);">$${player.bet}</div>` : ''}
         `;
         elements.playerContainer.appendChild(slot);
         
         const cardContainer = slot.querySelector('.player-cards-container');
         player.cards.forEach(card => {
             const cardEl = document.createElement('div');
-            cardEl.className = 'card';
+            cardEl.className = 'card' + (player.status === 'FOLDED' ? ' folded' : '');
             
             let displayCard = card;
             if (player.peerId !== myPeerId && gameState.phase !== 'SHOWDOWN') {
                 displayCard = 'hidden';
             }
 
-            if (displayCard !== 'hidden') cardEl.classList.add('flipped');
-
-            cardEl.innerHTML = `
-                <div class="card-face card-back"></div>
-                <div class="card-face card-front ${displayCard !== 'hidden' && displayCard.color === 'red' ? 'red' : ''}">
-                    <span>${displayCard !== 'hidden' ? displayCard.value : ''}</span>
-                    <span>${displayCard !== 'hidden' ? displayCard.suit : ''}</span>
-                </div>
-            `;
+            if (displayCard === 'hidden') {
+                cardEl.innerHTML = `<div class="card-face card-back"></div>`;
+            } else {
+                cardEl.classList.add('flipped');
+                cardEl.innerHTML = `
+                    <div class="card-face card-front ${displayCard.color === 'red' ? 'red' : ''}">
+                        <div class="card-val">${displayCard.value}</div>
+                        <div class="card-suit">${displayCard.suit}</div>
+                        <div class="card-val" style="transform: rotate(180deg);">${displayCard.value}</div>
+                    </div>
+                `;
+            }
             cardContainer.appendChild(cardEl);
         });
     });
@@ -641,10 +681,10 @@ function renderTable() {
         const cardEl = document.createElement('div');
         cardEl.className = 'card flipped';
         cardEl.innerHTML = `
-            <div class="card-face card-back"></div>
             <div class="card-face card-front ${card.color === 'red' ? 'red' : ''}">
-                <span>${card.value}</span>
-                <span>${card.suit}</span>
+                <div class="card-val">${card.value}</div>
+                <div class="card-suit">${card.suit}</div>
+                <div class="card-val" style="transform: rotate(180deg);">${card.value}</div>
             </div>
         `;
         elements.communityCards.appendChild(cardEl);

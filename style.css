@@ -1,9 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 :root {
-    --felt-green: #074d23;
-    --text-color: #ffffff;
-    --player-red: #c62828;
-    --player-yellow: #fdd835;
-    --bg-dark: #000000;
+    --felt-green: #2a7e4b;
+    --felt-dark: #1b5e3a;
+    --pixel-black: #1a1c2c;
+    --pixel-white: #f4f4f4;
+    --pixel-gold: #f4b41b;
+    --pixel-red: #d95763;
+    --pixel-blue: #639bff;
+    --pixel-shadow: #10121c;
+    --border-size: 4px;
 }
 
 body, html {
@@ -11,11 +17,11 @@ body, html {
     padding: 0;
     width: 100%;
     height: 100%;
-    font-family: 'Arial', sans-serif;
-    background-color: var(--felt-green);
-    background-image: radial-gradient(circle, #0a6b31 0%, #074d23 100%);
-    color: var(--text-color);
+    font-family: 'Press Start 2P', cursive;
+    background-color: var(--pixel-black);
+    color: var(--pixel-white);
     overflow: hidden;
+    image-rendering: pixelated;
 }
 
 #app {
@@ -24,6 +30,7 @@ body, html {
     align-items: center;
     justify-content: center;
     height: 100vh;
+    background: radial-gradient(circle, var(--felt-green) 0%, var(--felt-dark) 100%);
 }
 
 .screen {
@@ -39,92 +46,116 @@ body, html {
     display: flex;
 }
 
-#lobby-screen {
-    background: linear-gradient(135deg, #2c3e50, #000000);
-}
-
-.card-panel {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 2rem;
-    border-radius: 1rem;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    text-align: center;
-    width: 320px;
-}
-
-h1 { margin-top: 0; color: #ffcc00; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
-
-input {
-    width: 100%;
-    padding: 0.8rem;
-    margin: 1rem 0;
-    border: none;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    box-sizing: border-box;
-    background: rgba(255, 255, 255, 0.9);
-}
-
-button {
-    padding: 0.8rem;
-    margin: 0.5rem 0;
-    border: none;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.1s, background 0.2s;
-}
-
-.btn-primary { background: #ffcc00; color: #000; width: 100%; }
-.btn-secondary { background: #4a90e2; color: #fff; width: 100%; }
-
-#status-msg {
-    margin-top: 1rem;
-    font-size: 0.9rem;
-    color: #ccc;
-}
-
-#game-screen {
+/* Pixel UI Components */
+.pixel-border {
+    border: var(--border-size) solid var(--pixel-black);
+    box-shadow: 
+        inset -4px -4px 0px 0px rgba(0,0,0,0.2),
+        inset 4px 4px 0px 0px rgba(255,255,255,0.2);
+    background: #3d3d3d;
     position: relative;
 }
 
+.pixel-text {
+    text-shadow: 2px 2px 0px var(--pixel-black);
+    letter-spacing: 1px;
+}
+
+/* Lobby Screen */
+#lobby-screen {
+    background: repeating-conic-gradient(var(--pixel-black) 0% 25%, #222 0% 50%) 50% / 40px 40px;
+}
+
+.card-panel {
+    background: #4e4e4e;
+    padding: 2.5rem;
+    border: 8px solid var(--pixel-black);
+    box-shadow: 10px 10px 0px var(--pixel-shadow);
+    text-align: center;
+    width: 380px;
+}
+
+h1 { 
+    margin-top: 0; 
+    color: var(--pixel-gold); 
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+}
+
+input.pixel-input, input[type="text"] {
+    width: 100%;
+    padding: 1rem;
+    margin: 1rem 0;
+    border: 4px solid var(--pixel-black);
+    background: #fff;
+    color: #000;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+    box-sizing: border-box;
+}
+
+button {
+    font-family: 'Press Start 2P', cursive;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    border: 4px solid var(--pixel-black);
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: transform 0.1s;
+}
+
+button:active {
+    transform: translate(2px, 2px);
+}
+
+.btn-primary { 
+    background: var(--pixel-gold); 
+    color: #000; 
+    width: 100%;
+    box-shadow: inset -4px -4px 0px 0px #b08110;
+}
+
+.btn-secondary { 
+    background: var(--pixel-blue); 
+    color: #fff; 
+    width: 100%;
+    box-shadow: inset -4px -4px 0px 0px #3060b0;
+}
+
+#status-msg {
+    margin-top: 1rem;
+    font-size: 0.6rem;
+    line-height: 1.5;
+}
+
+/* Game Table Area */
 #table-area {
     width: 100vw;
     height: 100vh;
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: 
+        radial-gradient(ellipse at center, rgba(255,255,255,0.1) 0%, transparent 70%),
+        url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAIElEQVQYV2NkYGD4D8DAxAADmIBYkYGBgYEBXQCshAcGACi3AggYf8vUAAAAAElFTkSuQmCC") repeat;
 }
 
-/* Pot Display */
 .pot-container {
     position: absolute;
-    top: 25%;
+    top: 32%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    font-size: 3rem;
-    font-weight: bold;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    font-size: 1.2rem;
+    color: var(--pixel-gold);
     display: flex;
     flex-direction: column;
     align-items: center;
+    z-index: 5;
 }
 
-.pot-chips {
-    display: flex;
-    gap: -5px;
-    margin-bottom: 5px;
-}
-
-/* Player UI Cards */
+/* Player UI */
 .player-slot {
     position: absolute;
-    width: 140px;
+    width: 120px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -133,116 +164,79 @@ button {
 }
 
 .player-info-box {
-    width: 100px;
-    border-radius: 4px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-    border: 2px solid #222;
-    position: relative;
-    z-index: 2; /* Ensure balance is on top of cards if they touch */
-    background: #111;
+    width: 110px;
+    border: 4px solid var(--pixel-black);
+    background: #333;
+    image-rendering: pixelated;
 }
 
 .player-amount {
-    background: var(--player-red);
+    background: var(--pixel-red);
     color: white;
-    font-size: 0.85rem;
-    font-weight: bold;
-    padding: 3px 5px;
+    font-size: 0.6rem;
+    padding: 6px 2px;
     text-align: center;
+    border-bottom: 4px solid var(--pixel-black);
 }
 
 .player-name-label {
-    background: white;
+    background: #eee;
     color: black;
-    font-size: 0.8rem;
-    font-weight: bold;
-    padding: 3px 5px;
+    font-size: 0.55rem;
+    padding: 6px 2px;
     text-align: center;
 }
 
 .player-slot.me .player-name-label {
-    background: var(--player-yellow);
+    background: var(--pixel-gold);
 }
 
 .player-cards-container {
     display: flex;
     justify-content: center;
-    margin-bottom: -10px; /* Reduced negative margin */
-    width: 140px;
-    position: relative;
-    z-index: 1;
+    margin-bottom: 4px;
+    height: 60px;
 }
 
+/* Card Visuals */
 .card {
-    width: 50px;
-    height: 70px;
-    border-radius: 4px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    width: 44px;
+    height: 60px;
+    border: 3px solid var(--pixel-black);
     position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.6s;
+    background: white;
+    box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
 }
-
-/* Tilted hole cards */
-.player-cards-container .card:nth-child(1) { transform: rotate(-10deg) translateX(10px); }
-.player-cards-container .card:nth-child(2) { transform: rotate(10deg) translateX(-10px); }
-
-.card.flipped {
-    transform: rotateY(180deg);
-}
-
-/* Tilted hole cards flipped */
-.player-cards-container .card.flipped:nth-child(1) { transform: rotateY(180deg) rotate(-10deg) translateX(10px); }
-.player-cards-container .card.flipped:nth-child(2) { transform: rotateY(180deg) rotate(10deg) translateX(-10px); }
 
 .card-face {
     position: absolute;
     width: 100%;
     height: 100%;
-    backface-visibility: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    font-weight: bold;
-}
-
-.card-front {
-    background: white;
-    color: black;
-    transform: rotateY(180deg);
-}
-
-.card-back {
-    background: #1e88e5; /* Blue back */
-    border: 2px solid white;
+    justify-content: space-between;
+    padding: 2px;
     box-sizing: border-box;
 }
 
-.card-front span:first-child { font-size: 0.9rem; align-self: flex-start; margin-left: 3px; }
-.card-front span:last-child { font-size: 1.4rem; }
-.card-front.red { color: #d32f2f; }
-
-/* Dealer Button */
-.dealer-button {
-    position: absolute;
-    bottom: -10px;
-    right: -10px;
-    width: 24px;
-    height: 24px;
-    background: white;
-    color: #d32f2f;
-    border-radius: 50%;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-    border: 2px solid #d32f2f;
+.card-back {
+    background: #2b5797;
+    background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255,255,255,0.1) 5px, rgba(255,255,255,0.1) 10px);
+    z-index: 2;
 }
+
+.card.flipped .card-back { display: none; }
+
+.card-front {
+    color: black;
+    font-size: 0.7rem;
+}
+
+.card-front.red { color: var(--pixel-red); }
+
+.card-val { align-self: flex-start; }
+.card-suit { font-size: 1.2rem; }
 
 /* Community Cards */
 .community-cards {
@@ -251,194 +245,39 @@ button {
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
-    gap: 8px;
+    gap: 12px;
 }
 
 .community-cards .card {
-    width: 70px;
-    height: 100px;
+    width: 56px;
+    height: 80px;
 }
 
-.community-cards .card-front span:first-child { font-size: 1.1rem; }
-.community-cards .card-front span:last-child { font-size: 1.8rem; }
-
-/* Action Buttons */
+/* Action Bar */
 #controls-bar {
     position: fixed;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 10px;
+    gap: 15px;
     z-index: 100;
-    width: 95%;
-    max-width: 500px;
-    justify-content: center;
 }
 
 .action-btn {
-    flex: 1;
-    height: 45px;
-    background: #111;
+    width: 120px;
+    height: 50px;
+    background: #444;
     color: white;
-    border: 2px solid #333;
-    border-radius: 10px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 4px 0 #000;
-    min-width: 0;
+    border: 4px solid var(--pixel-black);
+    box-shadow: inset -4px -4px 0px rgba(0,0,0,0.4);
 }
 
-/* Mobile Adjustments */
-@media (max-width: 600px) {
-    .pot-container {
-        font-size: 1.5rem;
-        top: 30%;
-    }
+.fold-btn { background: #888; }
+.call-btn { background: var(--pixel-blue); }
+.raise-btn { background: var(--pixel-gold); color: #000; }
 
-    .community-cards .card {
-        width: 45px;
-        height: 65px;
-    }
-
-    .player-slot {
-        width: 100px;
-    }
-
-    .player-info-box {
-        width: 80px;
-    }
-
-    .player-amount, .player-name-label {
-        font-size: 0.7rem;
-        padding: 2px;
-    }
-
-    .player-cards-container .card {
-        width: 35px;
-        height: 50px;
-    }
-
-    .card-front span:first-child { font-size: 0.7rem; }
-    .card-front span:last-child { font-size: 1rem; }
-
-    #game-log {
-        width: 150px;
-        height: 100px;
-        font-size: 0.7rem;
-        bottom: 80px;
-        top: auto;
-        right: 10px;
-    }
-
-    #game-log.collapsed {
-        height: 25px;
-        width: 35px;
-    }
-
-    #game-info {
-        top: 75px;
-        left: 10px;
-    }
-
-    .top-icon-btn {
-        width: 40px;
-        height: 40px;
-        font-size: 1.2rem;
-    }
-}
-
-.action-btn:active {
-    transform: translateY(2px);
-    box-shadow: 0 2px 0 #000;
-}
-
-/* Chips Visuals */
-.chip {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    border: 2px dashed rgba(255,255,255,0.5);
-    box-shadow: 0 2px 2px rgba(0,0,0,0.4);
-}
-.chip-white { background: #fff; }
-.chip-blue { background: #1976d2; }
-.chip-red { background: #d32f2f; }
-.chip-yellow { background: #fbc02d; }
-
-.player-chips-stack {
-    position: absolute;
-    right: -25px;
-    top: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: -10px;
-}
-
-/* Winner Effect */
-.player-slot.winner .player-info-box {
-    border-color: #ffcc00;
-    animation: winnerPulse 1s infinite alternate;
-}
-
-@keyframes winnerPulse {
-    from { transform: scale(1); box-shadow: 0 0 10px #ffcc00; }
-    to { transform: scale(1.05); box-shadow: 0 0 30px #ffcc00; }
-}
-
-#game-log {
-    position: absolute;
-    right: 10px;
-    bottom: 100px;
-    width: 200px;
-    height: 150px;
-    background: rgba(0,0,0,0.6);
-    padding: 10px;
-    border-radius: 8px;
-    overflow: hidden;
-    font-size: 0.8rem;
-    color: #eee;
-    z-index: 100;
-    border: 1px solid rgba(255,255,255,0.1);
-    transition: all 0.3s ease;
-}
-
-#game-log.collapsed {
-    height: 30px;
-    width: 40px;
-    padding: 5px;
-}
-
-#log-content {
-    height: calc(100% - 10px);
-    overflow-y: auto;
-}
-
-#game-log.collapsed #log-content {
-    display: none;
-}
-
-#toggle-log-btn {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2rem;
-    z-index: 101;
-    padding: 0;
-}
-
-#game-info {
-    position: absolute;
-    top: 80px;
-    left: 20px;
-    z-index: 100;
-}
-
-/* Custom Raise Modal */
+/* Modals */
 .modal {
     display: none;
     position: fixed;
@@ -446,67 +285,159 @@ button {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.85);
     z-index: 1000;
     align-items: center;
     justify-content: center;
 }
 
-.modal.active {
-    display: flex;
-}
+.modal.active { display: flex; }
 
 .modal-content {
-    background: #222;
-    border: 2px solid var(--player-yellow);
-    border-radius: 15px;
+    width: 320px;
     padding: 20px;
-    width: 300px;
     text-align: center;
-    box-shadow: 0 0 30px rgba(0,0,0,0.5);
 }
 
-.modal-content h3 {
-    margin-top: 0;
-    color: var(--player-yellow);
+.modal-content h3 { font-size: 0.9rem; margin-bottom: 20px; color: var(--pixel-gold); }
+
+/* Game Log & Info */
+#game-info {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#room-display, #game-status {
+    background: var(--pixel-black);
+    border: 2px solid #555;
+    padding: 8px 12px;
+    font-size: 0.6rem;
+    color: var(--pixel-gold);
+}
+
+#game-log {
+    position: absolute;
+    right: 20px;
+    bottom: 90px;
+    width: 240px;
+    height: 180px;
+    background: rgba(0,0,0,0.7);
+    border: 4px solid var(--pixel-black);
+    padding: 10px;
+    font-size: 0.5rem;
+    line-height: 1.4;
+    overflow: hidden;
+}
+
+#log-content div { margin-bottom: 6px; border-left: 3px solid var(--pixel-gold); padding-left: 5px; }
+
+/* Responsive / Mobile */
+@media (max-width: 600px) {
+    .card-panel { width: 90%; padding: 1.5rem; }
+    h1 { font-size: 1.2rem; }
+    
+    .player-slot { width: 90px; }
+    .player-info-box { width: 85px; }
+    .player-cards-container { height: 45px; }
+    .card { width: 32px; height: 45px; }
+    .card-front { font-size: 0.5rem; }
+    .card-suit { font-size: 0.8rem; }
+    
+    .community-cards { gap: 6px; }
+    .community-cards .card { width: 40px; height: 55px; }
+    
+    #controls-bar { flex-direction: row; flex-wrap: wrap; justify-content: center; width: 100%; gap: 8px; }
+    .action-btn { width: 30%; height: 40px; font-size: 0.6rem; }
+    
+    #game-log { width: 160px; height: 120px; right: 10px; bottom: 80px; }
+}
+
+/* Dealer Button */
+.dealer-button {
+    position: absolute;
+    bottom: -8px;
+    right: -8px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    color: var(--pixel-red);
+    border: 3px solid var(--pixel-black);
+    font-size: 0.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#reset-room-btn {
+    background: var(--pixel-red);
+    color: white;
+    margin-top: 5px;
+    font-size: 0.5rem;
+}
+
+/* Alert Modal Specifics */
+.alert-content p {
+    font-size: 0.7rem;
+    line-height: 1.6;
+    margin: 20px 0;
+    color: #ccc;
+}
+
+/* Turn Indicator */
+.player-slot.active-turn .player-info-box {
+    border-color: var(--pixel-blue);
+    box-shadow: 0 0 15px var(--pixel-blue);
+}
+
+.player-slot.winner .player-info-box {
+    border-color: var(--pixel-gold);
+    animation: pixelPulse 0.5s infinite alternate;
+}
+
+@keyframes pixelPulse {
+    from { transform: scale(1); }
+    to { transform: scale(1.1); }
+}
+
+.card.folded {
+    opacity: 0.4;
+    filter: grayscale(1);
+    transform: translateY(10px);
 }
 
 .raise-input-group {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 15px;
     margin: 20px 0;
 }
 
 #raise-amount-input {
-    width: 100px;
+    width: 140px;
     text-align: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    padding: 5px;
-    border-radius: 5px;
-    border: 1px solid #444;
-    background: #000;
-    color: white;
+    font-size: 1rem;
+    padding: 10px;
 }
 
 .adjust-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: none;
-    background: #444;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #555;
     color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
 }
 
-.adjust-btn:hover { background: #666; }
-
 .raise-range-info {
-    font-size: 0.8rem;
-    color: #aaa;
+    font-size: 0.5rem;
+    color: #888;
     margin-bottom: 20px;
 }
 
@@ -517,56 +448,38 @@ button {
 
 .modal-btn {
     flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.cancel-btn { background: #555; color: white; }
-.confirm-btn { background: var(--player-yellow); color: black; }
-
-#room-display {
-    background: rgba(0,0,0,0.6);
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    margin-bottom: 5px;
-}
-
-#game-status {
-    background: rgba(0,0,0,0.6);
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 0.9rem;
+    padding: 12px;
 }
 
 #top-bar {
     position: absolute;
     top: 20px;
-    width: 100%;
+    right: 20px;
     display: flex;
-    justify-content: space-between;
-    padding: 0 20px;
-    box-sizing: border-box;
+    gap: 10px;
     z-index: 100;
 }
 
 .top-icon-btn {
-    width: 50px;
-    height: 50px;
-    background: rgba(0,0,0,0.7);
-    color: white;
+    width: 40px;
+    height: 40px;
+    background: var(--pixel-black);
     border: 2px solid #555;
-    border-radius: 10px;
-    font-size: 1.5rem;
+    color: white;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
+    font-size: 1rem;
 }
 
-.top-icon-btn:hover {
-    background: rgba(0,0,0,0.9);
+#toggle-log-btn {
+    background: transparent;
+    border: none;
+    color: var(--pixel-gold);
+    cursor: pointer;
+    font-size: 1rem;
+    position: absolute;
+    top: 5px;
+    right: 5px;
 }

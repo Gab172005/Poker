@@ -1,84 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P2P Browser Poker</title>
+    <title>UPLB POKER</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<div id="app">
-    <!-- Lobby Screen -->
-    <div id="lobby-screen" class="screen active">
-        <div class="card-panel">
-            <h1>POKER P2P</h1>
-            <input type="text" id="player-name" placeholder="Enter Your Name" maxlength="12">
-            <button id="create-btn" class="btn-primary">Create Private Room</button>
-            <hr style="width:100%; border:0; border-top:1px solid rgba(255,255,255,0.2); margin: 1rem 0;">
-            <input type="text" id="room-code" placeholder="Enter 6-Char Room Code" maxlength="6">
-            <button id="join-btn" class="btn-secondary">Join Room</button>
-            <p id="status-msg"></p>
-        </div>
-    </div>
-
-    <!-- Game Screen -->
-    <div id="game-screen" class="screen">
-        <div id="top-bar">
-            <button class="top-icon-btn" id="home-btn" title="Leave Room">🏠</button>
-            <button class="top-icon-btn" id="audio-btn" title="Toggle Audio">🔊</button>
-        </div>
-        <div id="game-info">
-            <div id="room-display">Room: -</div>
-            <div id="game-status">Waiting for players...</div>
-            <button id="start-game-btn" style="display: none;">Start Game</button>
-            <button id="reset-room-btn" style="display: none;">Reset Room</button>
-        </div>
-        <div id="game-log">
-            <button id="toggle-log-btn" title="Toggle Log">📜</button>
-            <div id="log-content"></div>
-        </div>
-        <div id="table-area">
-            <div id="player-container"></div>
-            <div class="community-cards" id="community-cards"></div>
-        </div>
-        <div id="controls-bar" style="display: none;">
-            <button class="action-btn fold-btn" id="fold-btn">Fold</button>
-            <button class="action-btn call-btn" id="call-btn">Check</button>
-            <button class="action-btn raise-btn" id="raise-btn">Raise</button>
-        </div>
-
-        <!-- Raise Modal -->
-        <div id="raise-modal" class="modal">
-            <div class="modal-content pixel-border">
-                <h3 class="pixel-text">RAISE AMOUNT</h3>
-                <div class="raise-input-group">
-                    <button class="adjust-btn pixel-border" id="decrease-raise">-</button>
-                    <input type="number" id="raise-amount-input" min="0" step="10" class="pixel-input">
-                    <button class="adjust-btn pixel-border" id="increase-raise">+</button>
-                </div>
-                <div class="raise-range-info">Min: $<span id="min-raise-info">0</span> | Max: $<span id="max-raise-info">0</span></div>
-                <div class="modal-actions">
-                    <button class="modal-btn cancel-btn pixel-border" id="cancel-raise">CANCEL</button>
-                    <button class="modal-btn confirm-btn pixel-border" id="confirm-raise">CONFIRM</button>
-                </div>
+    <div id="app">
+        <!-- Lobby Screen -->
+        <div id="lobby-screen" class="screen active">
+            <div class="card-panel">
+                <h1>UPLB POKER</h1>
+                <input type="text" id="player-name" placeholder="Enter Your Name" maxlength="12">
+                <button id="create-btn" class="btn-primary">Create Private Room</button>
+                <hr style="width:100%; border:0; border-top:1px solid rgba(255,255,255,0.2); margin: 1rem 0;">
+                <input type="text" id="room-code" placeholder="Enter 6-Char Room Code" maxlength="6">
+                <button id="join-btn" class="btn-secondary">Join Room</button>
+                <p id="status-msg"></p>
             </div>
         </div>
 
-        <!-- Alert Modal -->
-        <div id="alert-modal" class="modal">
-            <div class="modal-content pixel-border alert-content">
-                <h3 id="alert-title" class="pixel-text">MESSAGE</h3>
-                <p id="alert-msg"></p>
-                <div class="modal-actions" id="alert-actions">
-                    <button class="modal-btn confirm-btn pixel-border" id="alert-ok">OK</button>
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div id="top-bar">
+                <button class="top-icon-btn" id="home-btn" title="Leave Room">🏠</button>
+                <button class="top-icon-btn" id="audio-btn" title="Toggle Audio">🔊</button>
+            </div>
+            <div id="game-info">
+                <div id="room-display">Room: -</div>
+                <div id="game-status">Waiting for players...</div>
+                <button id="start-game-btn" style="display: none;">Start Game</button>
+                <button id="reset-room-btn" style="display: none;">Reset Room</button>
+            </div>
+            <div id="game-log">
+                <button id="toggle-log-btn" title="Toggle Log">📜</button>
+                <div id="log-content"></div>
+            </div>
+            <div id="table-area">
+                <div id="player-container"></div>
+                <div class="community-cards" id="community-cards"></div>
+            </div>
+            <div id="controls-bar" style="display: none;">
+                <button class="action-btn fold-btn" id="fold-btn">Fold</button>
+                <button class="action-btn call-btn" id="call-btn">Check</button>
+                <button class="action-btn raise-btn" id="raise-btn">Raise</button>
+            </div>
+
+            <!-- Raise Modal -->
+            <div id="raise-modal" class="modal">
+                <div class="modal-content pixel-border">
+                    <h3 class="pixel-text">RAISE AMOUNT</h3>
+                    <div class="raise-input-group">
+                        <button class="adjust-btn pixel-border" id="decrease-raise">-</button>
+                        <input type="number" id="raise-amount-input" min="0" step="10" class="pixel-input">
+                        <button class="adjust-btn pixel-border" id="increase-raise">+</button>
+                    </div>
+                    <div class="raise-range-info">Min: $<span id="min-raise-info">0</span> | Max: $<span
+                            id="max-raise-info">0</span></div>
+                    <div class="modal-actions">
+                        <button class="modal-btn cancel-btn pixel-border" id="cancel-raise">CANCEL</button>
+                        <button class="modal-btn confirm-btn pixel-border" id="confirm-raise">CONFIRM</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alert Modal -->
+            <div id="alert-modal" class="modal">
+                <div class="modal-content pixel-border alert-content">
+                    <h3 id="alert-title" class="pixel-text">MESSAGE</h3>
+                    <p id="alert-msg"></p>
+                    <div class="modal-actions" id="alert-actions">
+                        <button class="modal-btn confirm-btn pixel-border" id="alert-ok">OK</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<script src="game.js"></script>
+    <script src="game.js"></script>
 </body>
+
 </html>

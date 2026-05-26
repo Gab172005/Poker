@@ -169,7 +169,9 @@ elements.confirmRaiseBtn.onclick = async () => {
 };
 
 elements.homeBtn.onclick = async () => {
-    if (await customConfirm("Leave this room?")) location.reload();
+    if (await customConfirm("Leave this room?")) {
+        leaveRoom();
+    }
 };
 
 const ICONS = {
@@ -231,9 +233,9 @@ function initPeer(id) {
     });
 }
 
-elements.createBtn.onclick = async () => {
+async function createRoom(providedCode = null) {
     myName = elements.playerName.value.trim() || "Host";
-    const code = generateRoomCode();
+    const code = providedCode || generateRoomCode();
     gameState.roomCode = code;
     showStatus("Creating room " + code + "...");
     
@@ -259,10 +261,17 @@ elements.createBtn.onclick = async () => {
 
         switchToGame();
         renderTable();
+
+        localStorage.setItem('poker_name', myName);
+        localStorage.setItem('poker_room', code);
+        localStorage.setItem('poker_isHost', 'true');
     } catch (e) {
         showStatus("Failed to create room. Try again.", true);
+        localStorage.removeItem('poker_room');
     }
-};
+}
+
+elements.createBtn.onclick = () => createRoom();
 
 elements.startGameBtn.onclick = async () => {
     if (gameState.players.length < 2) {
@@ -326,9 +335,9 @@ function startHand() {
     renderTable();
 }
 
-elements.joinBtn.onclick = async () => {
+async function joinRoom(providedCode = null) {
     myName = elements.playerName.value.trim() || "Player";
-    const code = elements.roomCode.value.trim().toUpperCase();
+    const code = providedCode || elements.roomCode.value.trim().toUpperCase();
     if (code.length !== 6) {
         showStatus("Enter a valid 6-character code.", true);
         return;
@@ -346,15 +355,22 @@ elements.joinBtn.onclick = async () => {
             setupConnection(conn);
             switchToGame();
             conn.send({ type: 'JOIN', name: myName, peerId: myPeerId });
+            
+            localStorage.setItem('poker_name', myName);
+            localStorage.setItem('poker_room', code);
+            localStorage.setItem('poker_isHost', 'false');
         });
 
         conn.on('error', (err) => {
             showStatus("Connection error: " + err, true);
+            localStorage.removeItem('poker_room');
         });
     } catch (e) {
         showStatus("Failed to join room.", true);
     }
-};
+}
+
+elements.joinBtn.onclick = () => joinRoom();
 
 function setupConnection(connection) {
     connections[connection.peer] = connection;
@@ -373,6 +389,11 @@ function setupConnection(connection) {
 function handleMessage(data, connection) {
     if (isHost) {
         if (data.type === 'JOIN') {
+            const isNameTaken = gameState.players.some(p => p.name.toLowerCase() === data.name.trim().toLowerCase());
+            if (isNameTaken) {
+                connection.send({ type: 'JOIN_REJECTED', reason: 'Name already taken.' });
+                return;
+            }
             gameState.players.push({
                 peerId: data.peerId,
                 name: data.name,
@@ -396,6 +417,10 @@ function handleMessage(data, connection) {
                 if (gameState.phase === 'DEALING' || gameState.phase === 'FLOP' || gameState.phase === 'TURN' || gameState.phase === 'RIVER') sfx.deal();
             }
             renderTable();
+        } else if (data.type === 'JOIN_REJECTED') {
+            customAlert(data.reason, "JOIN FAILED");
+            if (conn) conn.close();
+            leaveRoom(data.reason);
         }
     }
 }
@@ -576,6 +601,51 @@ function switchToGame() {
     elements.lobbyScreen.classList.remove('active');
     elements.gameScreen.classList.add('active');
 }
+
+function leaveRoom(msg = "You left the room.") {
+    elements.gameScreen.classList.remove('active');
+    elements.lobbyScreen.classList.add('active');
+    if (peer) {
+        peer.destroy();
+        peer = null;
+    }
+    conn = null;
+    isHost = false;
+    connections = {};
+    gameState.players = [];
+    if (msg) showStatus(msg);
+    localStorage.removeItem('poker_room');
+    localStorage.removeItem('poker_isHost');
+}
+
+// Browser Refresh/Leave handling
+window.addEventListener('beforeunload', (e) => {
+    if (gameState.phase !== 'LOBBY') {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+
+// Ensure we start at lobby on refresh
+window.addEventListener('load', () => {
+    const savedName = localStorage.getItem('poker_name');
+    const savedRoom = localStorage.getItem('poker_room');
+    const savedIsHost = localStorage.getItem('poker_isHost');
+
+    if (savedName) elements.playerName.value = savedName;
+    if (savedRoom) elements.roomCode.value = savedRoom;
+
+    if (savedName && savedRoom && savedIsHost !== null) {
+        if (savedIsHost === 'true') {
+            createRoom(savedRoom);
+        } else {
+            joinRoom(savedRoom);
+        }
+    } else {
+        elements.gameScreen.classList.remove('active');
+        elements.lobbyScreen.classList.add('active');
+    }
+});
 
 window.addEventListener('resize', () => {
     if (gameState.phase !== 'LOBBY') renderTable();

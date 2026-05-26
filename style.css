@@ -140,7 +140,7 @@ button:active {
 
 .pot-container {
     position: absolute;
-    top: 32%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
@@ -341,20 +341,21 @@ button:active {
     .card-panel { width: 90%; padding: 1.5rem; }
     h1 { font-size: 1.2rem; }
     
-    .player-slot { width: 90px; }
-    .player-info-box { width: 85px; }
-    .player-cards-container { height: 45px; }
-    .card { width: 32px; height: 45px; }
-    .card-front { font-size: 0.5rem; }
-    .card-suit { font-size: 0.8rem; }
+    .player-slot { width: 75px; }
+    .player-info-box { width: 70px; }
+    .player-cards-container { height: 40px; }
+    .card { width: 28px; height: 40px; }
+    .card-front { font-size: 0.4rem; }
+    .card-suit { font-size: 0.6rem; }
     
-    .community-cards { gap: 6px; }
-    .community-cards .card { width: 40px; height: 55px; }
+    .community-cards { gap: 4px; }
+    .community-cards .card { width: 30px; height: 42px; }
     
     #controls-bar { flex-direction: row; flex-wrap: wrap; justify-content: center; width: 100%; gap: 8px; }
     .action-btn { width: 30%; height: 40px; font-size: 0.6rem; }
     
     #game-log { width: 160px; height: 120px; right: 10px; bottom: 80px; }
+    .pot-container { font-size: 0.9rem; }
 }
 
 /* Dealer Button */

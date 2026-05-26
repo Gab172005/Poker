@@ -619,7 +619,7 @@ function renderTable() {
     const isMobile = tableWidth < 600;
     // Tighter radius to ensure players don't overlap with edge of screen or each other
     const radiusX = Math.min(tableWidth * (isMobile ? 0.38 : 0.35), isMobile ? 180 : 450); 
-    const radiusY = Math.min(tableHeight * (isMobile ? 0.32 : 0.3), isMobile ? 150 : 250);
+    const radiusY = Math.min(tableHeight * (isMobile ? 0.38 : 0.3), isMobile ? 180 : 250);
 
     const myIndex = gameState.players.findIndex(p => p.peerId === myPeerId);
 
